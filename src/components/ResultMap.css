@@ -1,0 +1,551 @@
+.result-map-page {
+  display: flex;
+  min-height: 100vh;
+  background: #1a1a2e;
+}
+
+.result-map-page.dark-theme {
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+}
+
+/* 좌측 사이드바 */
+.result-sidebar {
+  width: 400px;
+  background: rgba(26, 26, 46, 0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: slideRight 0.4s ease;
+}
+
+@keyframes slideRight {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-base);
+  width: fit-content;
+}
+
+.back-btn:hover {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+/* 분석 요약 */
+.analysis-summary {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-header .business-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.summary-header h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.summary-header p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.analysis-info h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.875rem;
+}
+
+.analysis-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.analysis-info li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+}
+
+.analysis-info li:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.info-value {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Top 3 후보지 */
+.top-candidates h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.candidate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.candidate-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-bounce);
+  animation: slideUp 0.4s ease;
+}
+
+.candidate-card:nth-child(1) { animation-delay: 0.1s; }
+.candidate-card:nth-child(2) { animation-delay: 0.2s; }
+.candidate-card:nth-child(3) { animation-delay: 0.3s; }
+
+.candidate-card:hover,
+.candidate-card.active {
+  border-color: #8b5cf6;
+  transform: translateX(4px);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.candidate-card.rank-1 {
+  border-left: 4px solid #ef4444;
+}
+
+.candidate-card.rank-2 {
+  border-left: 4px solid #f97316;
+}
+
+.candidate-card.rank-3 {
+  border-left: 4px solid #f59e0b;
+}
+
+.rank-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.candidate-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.candidate-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.375rem;
+}
+
+.candidate-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.grade-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+}
+
+.candidate-summary {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.625rem;
+}
+
+.candidate-score {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.score-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+}
+
+.score-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  min-width: 40px;
+}
+
+.candidate-arrow {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 1.25rem;
+  transition: var(--transition-base);
+}
+
+.candidate-card:hover .candidate-arrow {
+  color: #8b5cf6;
+  transform: translateX(4px);
+}
+
+/* 범례 */
+.legend-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+
+.legend-section h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.875rem;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+/* 지도 영역 */
+.map-area {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.map-title h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.map-title p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.25rem;
+}
+
+/* 지도 컨테이너 */
+.map-container {
+  flex: 1;
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  position: relative;
+  min-height: 500px;
+}
+
+/* Leaflet 커스텀 스타일 */
+.leaflet-container {
+  background: #1a1a2e;
+  font-family: inherit;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.leaflet-control-zoom a {
+  background: rgba(26, 26, 46, 0.95) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: rgba(139, 92, 246, 0.3) !important;
+}
+
+/* 커스텀 팝업 스타일 */
+.leaflet-popup-content-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  padding: 0;
+  min-width: 280px;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  width: auto !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff;
+}
+
+.leaflet-popup-close-button {
+  display: none;
+}
+
+.popup-content {
+  padding: 1.25rem;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.popup-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.popup-badge {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  background: #f1f5f9;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+}
+
+.popup-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.popup-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.375rem 0;
+}
+
+.popup-stat .stat-label {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.popup-stat .stat-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.popup-stat .stat-value.warning {
+  color: #ef4444;
+}
+
+.popup-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+
+.popup-score .score-label {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.popup-score .score-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.popup-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-bounce);
+}
+
+.popup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+/* AI 코멘트 */
+.ai-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-xl);
+  animation: slideUp 0.4s ease 0.3s both;
+}
+
+.ai-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.ai-content h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #8b5cf6;
+  margin-bottom: 0.5rem;
+}
+
+.ai-content p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+}
+
+.ai-content strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .result-map-page {
+    flex-direction: column;
+  }
+  
+  .result-sidebar {
+    width: 100%;
+    max-height: 50vh;
+  }
+  
+  .map-container {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 640px) {
+  .result-sidebar {
+    padding: 1rem;
+  }
+  
+  .map-area {
+    padding: 1rem;
+  }
+  
+  .leaflet-popup-content-wrapper {
+    min-width: 240px;
+  }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

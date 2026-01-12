@@ -1,0 +1,5 @@
+.platform {
+  min-height: 100vh;
+  background: transparent;
+  position: relative;
+}
