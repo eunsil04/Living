@@ -826,6 +826,95 @@
   position: relative;
 }
 
+/* 경쟁 점포 지도 섹션 */
+.competitor-map-section {
+  margin-bottom: 2rem;
+}
+
+.competitor-map-section h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.competitor-map-container {
+  position: relative;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  border: 1px solid var(--border-light);
+}
+
+.map-legend {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+
+.legend-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.legend-items-grid {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.legend-item-map {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.legend-marker.red {
+  background: #dc2626;
+}
+
+.legend-marker.orange {
+  background: #f59e0b;
+}
+
+.legend-marker.green {
+  background: #10b981;
+}
+
+.legend-marker.yellow {
+  background: #eab308;
+}
+
+.legend-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Leaflet 팝업 커스텀 */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
 /* 브랜드 태그 */
 .major-brands {
   margin-bottom: 1.5rem;

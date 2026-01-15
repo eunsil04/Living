@@ -13,7 +13,7 @@ function Header({ viewMode, onViewModeChange }: HeaderProps) {
         <div className="header-logo">
           <span className="logo-icon">🏙️</span>
           <div className="logo-text">
-            <h1>세종시 상권 분석 플랫폼</h1>
+            <h1>"세종 채움"</h1>
             <p>공실·상권 데이터 통합 지도 및 AI 기반 업종 입지 추천</p>
           </div>
         </div>

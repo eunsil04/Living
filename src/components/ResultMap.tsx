@@ -36,7 +36,7 @@ function MapController() {
   const map = useMap()
   
   useEffect(() => {
-    map.setView([36.4967, 127.2612], 12)
+    map.setView([36.4967, 127.2612], 13)
   }, [map])
   
   return null
@@ -194,7 +194,7 @@ function ResultMap({ businessType, recommendations, onSelectCandidate, onBack }:
       <main className="map-area">
         <div className="map-header">
           <div className="map-title">
-            <h2>세종시 입지 유망도 지도</h2>
+            <h2>세종 채움 입지 유망도 지도</h2>
             <p>지역을 클릭하면 상세 분석을 확인할 수 있습니다</p>
           </div>
         </div>
@@ -202,82 +202,97 @@ function ResultMap({ businessType, recommendations, onSelectCandidate, onBack }:
         <div className="map-container">
           <MapContainer
             center={[36.4967, 127.2612]}
-            zoom={12}
+            zoom={13}
             style={{ height: '100%', width: '100%' }}
             zoomControl={true}
           >
             <MapController />
             
-            {/* 다크 테마 타일 */}
+            {/* 라이트 테마 타일 */}
             <TileLayer
-              attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {/* 지역별 원형 마커 */}
-            {recommendations.map((rec) => {
-              const coords = districtCoordinates[rec.district.name]
-              if (!coords) return null
+            {/* 지역별 원형 마커 - 모든 지역 표시 */}
+            {Object.entries(districtCoordinates).map(([districtName, coords]) => {
+              // 해당 지역이 recommendations에 있는지 확인
+              const rec = recommendations.find(r => r.district.name === districtName)
+              
+              // recommendations에 있으면 점수에 따른 색상, 없으면 노란색
+              const fillColor = rec ? getScoreColor(rec.score) : '#fde047'
+              const radius = rec ? getCircleRadius(rec.score) : 12
 
               return (
                 <CircleMarker
-                  key={rec.district.name}
+                  key={districtName}
                   center={coords}
-                  radius={getCircleRadius(rec.score)}
-                  fillColor={getScoreColor(rec.score)}
+                  radius={radius}
+                  fillColor={fillColor}
                   fillOpacity={0.85}
-                  color={selectedDistrict === rec.district.name ? '#ffffff' : 'rgba(255,255,255,0.3)'}
-                  weight={selectedDistrict === rec.district.name ? 3 : 1}
+                  color={selectedDistrict === districtName ? '#ffffff' : 'rgba(255,255,255,0.3)'}
+                  weight={selectedDistrict === districtName ? 3 : 1}
                   eventHandlers={{
-                    mouseover: () => setSelectedDistrict(rec.district.name),
+                    mouseover: () => setSelectedDistrict(districtName),
                     mouseout: () => setSelectedDistrict(null),
                   }}
                 >
-                  <Popup className="custom-popup">
-                    <div className="popup-content">
-                      <div className="popup-header">
-                        <h3>{rec.district.name}</h3>
-                        <button className="popup-close">×</button>
-                      </div>
-                      <span className="popup-badge">{rec.district.livingArea}</span>
-                      
-                      <div className="popup-stats">
-                        <div className="popup-stat">
-                          <span className="stat-label">인구</span>
-                          <span className="stat-value">{rec.district.population.toLocaleString()}명</span>
+                  {rec && (
+                    <Popup className="custom-popup">
+                      <div className="popup-content">
+                        <div className="popup-header">
+                          <h3>{rec.district.name}</h3>
+                          <button className="popup-close">×</button>
                         </div>
-                        <div className="popup-stat">
-                          <span className="stat-label">카드매출</span>
-                          <span className="stat-value">{(rec.district.cardSales / 1000000000).toFixed(1)}십억</span>
+                        <span className="popup-badge">{rec.district.livingArea}</span>
+                        
+                        <div className="popup-stats">
+                          <div className="popup-stat">
+                            <span className="stat-label">인구</span>
+                            <span className="stat-value">{rec.district.population.toLocaleString()}명</span>
+                          </div>
+                          <div className="popup-stat">
+                            <span className="stat-label">공실률</span>
+                            <span className={`stat-value ${rec.district.vacancyRate > 10 ? 'warning' : ''}`}>
+                              {rec.district.vacancyRate}%{rec.district.vacancyRate > 10 ? ' (주의)' : ''}
+                            </span>
+                          </div>
+                          <div className="popup-stat">
+                            <span className="stat-label">상권활성화</span>
+                            <span className="stat-value">{rec.district.marketActivationIndex}점</span>
+                          </div>
                         </div>
-                        <div className="popup-stat">
-                          <span className="stat-label">공실률</span>
-                          <span className={`stat-value ${rec.district.vacancyRate > 10 ? 'warning' : ''}`}>
-                            {rec.district.vacancyRate}%{rec.district.vacancyRate > 10 ? ' (주의)' : ''}
+
+                        <div className="popup-score">
+                          <span className="score-label">입지 점수</span>
+                          <span className="score-value" style={{ color: getGradeColor(rec.score) }}>
+                            {rec.score}점 ({getGrade(rec.score)}등급)
                           </span>
                         </div>
-                        <div className="popup-stat">
-                          <span className="stat-label">상권활성화</span>
-                          <span className="stat-value">{rec.district.marketActivationIndex}점</span>
+
+                        <button 
+                          className="popup-btn"
+                          onClick={() => onSelectCandidate(rec.district)}
+                        >
+                          <span>🏢</span>
+                          <span>상세 분석 보기</span>
+                        </button>
+                      </div>
+                    </Popup>
+                  )}
+                  {!rec && (
+                    <Popup className="custom-popup">
+                      <div className="popup-content">
+                        <div className="popup-header">
+                          <h3>{districtName}</h3>
+                          <button className="popup-close">×</button>
                         </div>
+                        <p style={{ fontSize: '0.9rem', color: '#64748b', marginTop: '0.5rem' }}>
+                          이 지역은 분석 대상에 포함되지 않았습니다.
+                        </p>
                       </div>
-
-                      <div className="popup-score">
-                        <span className="score-label">입지 점수</span>
-                        <span className="score-value" style={{ color: getGradeColor(rec.score) }}>
-                          {rec.score}점 ({getGrade(rec.score)}등급)
-                        </span>
-                      </div>
-
-                      <button 
-                        className="popup-btn"
-                        onClick={() => onSelectCandidate(rec.district)}
-                      >
-                        <span>🏢</span>
-                        <span>상세 분석 보기</span>
-                      </button>
-                    </div>
-                  </Popup>
+                    </Popup>
+                  )}
                 </CircleMarker>
               )
             })}

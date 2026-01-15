@@ -81,7 +81,7 @@ export const realDistrictData: Record<string, RealDistrictInfo> = {
     },
     competitors: {
       cafe: { count: 28, majorBrands: ['스타벅스', '이디야', '메가커피', '컴포즈'] },
-      restaurant: { count: 67, majorBrands: ['맥도날드', '롯데리아', '한솥', '본죽'] },
+      restaurant: { count: 32, majorBrands: ['맥도날드', '롯데리아', '한솥', '본죽'] },
       convenience: { count: 12, majorBrands: ['CU', 'GS25', '세븐일레븐'] },
       bakery: { count: 9, majorBrands: ['파리바게뜨', '뚜레쥬르', '성심당'] },
       fitness: { count: 6, majorBrands: ['에니타임피트니스', '스포애니'] },

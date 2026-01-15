@@ -58,11 +58,11 @@ function HomePage({ onStart }: HomePageProps) {
             <div className="intro-content">
               <div className="intro-badge">
                 <span>🚀</span>
-                <span>세종시 AI 창업 입지 분석 플랫폼</span>
+                <span>세종 채움 - AI 창업 입지 분석 플랫폼</span>
               </div>
               
               <h1 className="intro-title">
-                <span className="title-gradient">세종시 창업,</span>
+                <span className="title-gradient">"세종 채움"으로</span>
                 <br />
                 <span className="title-main">AI가 찾아주는 <span className="highlight-text">황금 입지</span></span>
               </h1>

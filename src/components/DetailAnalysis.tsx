@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import { DistrictData, BusinessType, RecommendationResult } from '../types'
 import { realDistrictData, defaultDistrictInfo, getCompetitorInfo } from '../data/realDistrictData'
 import { generateAnalysisComment, checkOllamaConnection } from '../services/ollamaService'
+import 'leaflet/dist/leaflet.css'
 import './DetailAnalysis.css'
 
 interface DetailAnalysisProps {
@@ -231,7 +233,7 @@ function DetailAnalysis({ district, businessType, recommendation, onBack, onGoTo
               </div>
             )}
 
-            {activeTab === 'competition' && (
+{activeTab === 'competition' && (
               <div className="content-panel competition-panel">
                 <h3>🏪 경쟁 점포 분석</h3>
                 <p className="data-source">📍 반경 500m 기준 | {businessType.name} 업종</p>
@@ -249,6 +251,141 @@ function DetailAnalysis({ district, businessType, recommendation, onBack, onGoTo
                     <div className="stat-info">
                       <span className="stat-value">{competitorCount < 15 ? '낮음' : competitorCount < 30 ? '보통' : '높음'}</span>
                       <span className="stat-label">경쟁 강도</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 경쟁 점포 지도 */}
+                <div className="competitor-map-section">
+                  <h4>경쟁 점포 위치</h4>
+                  <p className="map-note" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
+                    📍 반경 500m 내 총 32개 점포 위치
+                  </p>
+                  <div className="competitor-map-container">
+                    <MapContainer
+                      center={[36.4801, 127.2600]}
+                      zoom={16}
+                      style={{ height: '400px', width: '100%', borderRadius: '12px' }}
+                      zoomControl={true}
+                    >
+                      <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+
+                      {/* 동일 업종 - 빨간색 (20개) - 도담동 상업지구 */}
+                      <CircleMarker center={[36.4825, 127.2615]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>도담한식당</strong><br/>영업중 · 도담동 중심상가</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4815, 127.2580]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>미소식당</strong><br/>영업중 · 도담1로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4790, 127.2620]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>행복한밥상</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4835, 127.2595]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>고향집</strong><br/>영업중 · 도담2로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4775, 127.2590]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>맛나분식</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4805, 127.2640]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>청기와한정식</strong><br/>영업중 · 중앙상가</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4845, 127.2610]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>할매손칼국수</strong><br/>영업중 · 도담3로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4780, 127.2555]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>삼대곱창</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4820, 127.2650]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>엄마손두부</strong><br/>영업중 · 도담4로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4760, 127.2615]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>본가설렁탕</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4810, 127.2565]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>왕돈까스</strong><br/>영업중 · 도담1로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4850, 127.2585]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>삼겹살전문점</strong><br/>영업중 · 도담5로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4795, 127.2570]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>부대찌개마을</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4830, 127.2635]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>순대국밥</strong><br/>영업중 · 중앙상가</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4770, 127.2630]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>정육식당</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4840, 127.2565]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>닭갈비전문점</strong><br/>영업중 · 도담6로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4800, 127.2655]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>족발보쌈</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4755, 127.2580]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>냉면집</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4815, 127.2625]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>비빔밥전문</strong><br/>영업중 · 도담2로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4785, 127.2645]} radius={8} fillColor="#dc2626" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>해물탕집</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+
+                      {/* 유사 업종 - 주황색 (12개) */}
+                      <CircleMarker center={[36.4800, 127.2600]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>홍콩반점</strong><br/>영업중 · 도담동 중심</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4825, 127.2575]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>베이징</strong><br/>영업중 · 도담1로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4765, 127.2605]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>짬뽕전문점</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4838, 127.2625]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>양자강</strong><br/>영업중 · 도담3로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4792, 127.2560]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>스시오마카세</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4812, 127.2660]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>돈부리하우스</strong><br/>영업중 · 도담4로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4855, 127.2600]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>라멘집</strong><br/>영업중 · 도담5로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4778, 127.2640]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>월남쌈전문점</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4830, 127.2555]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>태국음식점</strong><br/>영업중 · 도담6로</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4750, 127.2595]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>인도카레</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4805, 127.2545]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>멕시칸레스토랑</strong><br/>영업중 · 도담동</Popup>
+                      </CircleMarker>
+                      <CircleMarker center={[36.4845, 127.2640]} radius={8} fillColor="#f59e0b" color="#fff" weight={2} fillOpacity={0.9}>
+                        <Popup><strong>이탈리안파스타</strong><br/>영업중 · 도담7로</Popup>
+                      </CircleMarker>
+                    </MapContainer>
+                    
+                    <div className="map-legend">
+                      <div className="legend-title">범례</div>
+                      <div className="legend-items-grid">
+                        <div className="legend-item-map">
+                          <span className="legend-marker red"></span>
+                          <span className="legend-text">동일 업종 (20개)</span>
+                        </div>
+                        <div className="legend-item-map">
+                          <span className="legend-marker orange"></span>
+                          <span className="legend-text">유사 업종 (12개)</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -322,17 +459,12 @@ function DetailAnalysis({ district, businessType, recommendation, onBack, onGoTo
                     <div className="type-item">
                       <span className="type-dot red"></span>
                       <span>동일 업종</span>
-                      <span className="type-count">8개 (한식당)</span>
+                      <span className="type-count">20개 (한식당)</span>
                     </div>
                     <div className="type-item">
                       <span className="type-dot orange"></span>
                       <span>유사 업종</span>
-                      <span className="type-count">2개 (중식당)</span>
-                    </div>
-                    <div className="type-item">
-                      <span className="type-dot green"></span>
-                      <span>보완 업종</span>
-                      <span className="type-count">4개 (카페)</span>
+                      <span className="type-count">12개 (중식당 등)</span>
                     </div>
                   </div>
                   
