@@ -10,13 +10,14 @@ interface DetailAnalysisProps {
   district: DistrictData
   businessType: BusinessType
   recommendation: RecommendationResult
+  recommendations: RecommendationResult[]
   onBack: () => void
   onGoToPolicy: () => void
 }
 
 type TabType = 'traffic' | 'competition' | 'rent' | 'customer' | 'regulations' | 'safety'
 
-function DetailAnalysis({ district, businessType, recommendation, onBack, onGoToPolicy }: DetailAnalysisProps) {
+function DetailAnalysis({ district, businessType, recommendation, recommendations, onBack, onGoToPolicy }: DetailAnalysisProps) {
   const [activeTab, setActiveTab] = useState<TabType>('traffic')
   const [aiComment, setAiComment] = useState<string>('')
   const [isAiLoading, setIsAiLoading] = useState(false)
@@ -30,6 +31,47 @@ function DetailAnalysis({ district, businessType, recommendation, onBack, onGoTo
   const age2030Ratio = realData.demographics.age2030Ratio
   const competitorCount = competitorInfo.count
   const avgRent = realData.rent.avg1F
+
+  // 점수 분석 로직 (ResultMap과 동일)
+  const getRentAvg = (districtName: string) => {
+    const info = realDistrictData[districtName] || defaultDistrictInfo
+    return info.rent.avg1F
+  }
+
+  const average = (values: number[]) =>
+    values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0
+
+  const averages = {
+    population: average(recommendations.map((rec) => rec.district.population)),
+    competitionIndex: average(recommendations.map((rec) => rec.district.competitionIndex)),
+    vacancyRate: average(recommendations.map((rec) => rec.district.vacancyRate)),
+    marketActivationIndex: average(recommendations.map((rec) => rec.district.marketActivationIndex)),
+    rent: average(recommendations.map((rec) => getRentAvg(rec.district.name))),
+  }
+
+  const clamp = (value: number, min: number, max: number) =>
+    Math.max(min, Math.min(max, value))
+
+  const calcContribution = (value: number, avg: number, scale: number, invert = false) => {
+    if (!avg) return 0
+    const diff = invert ? avg - value : value - avg
+    return clamp(Math.round((diff / avg) * scale), -20, 20)
+  }
+
+  const getScoreBreakdown = (rec: RecommendationResult) => {
+    const rentAvg = getRentAvg(rec.district.name)
+    return {
+      population: calcContribution(rec.district.population, averages.population, 18),
+      competition: calcContribution(rec.district.competitionIndex, averages.competitionIndex, 14, true),
+      rent: calcContribution(rentAvg, averages.rent, 12, true),
+      vacancy: calcContribution(rec.district.vacancyRate, averages.vacancyRate, 10, true),
+      locationGrade: calcContribution(rec.district.marketActivationIndex, averages.marketActivationIndex, 15),
+    }
+  }
+
+  const scoreBreakdown = getScoreBreakdown(recommendation)
+
+  const formatContribution = (value: number) => `${value >= 0 ? '+' : ''}${value}점`
 
   // 기본 AI 코멘트 (Ollama 연결 안될 때 사용)
   const defaultComment = `${district.name}은(는) ${realData.commercialArea.type}으로, ${age2030Ratio > 40 ? '20~30대 젊은 층 비중이 높고' : '40~50대 안정적 소비층이 많고'}, 
@@ -924,6 +966,91 @@ function DetailAnalysis({ district, businessType, recommendation, onBack, onGoTo
               <p>{aiComment}</p>
             )}
           </div>
+
+          {/* 점수 분석 */}
+          {scoreBreakdown && (
+            <div className="score-analysis">
+              <div className="score-analysis-header">
+                <div className="score-analysis-title">
+                  <span className="analysis-icon">📊</span>
+                  <h4>점수 분석</h4>
+                </div>
+                <span className="score-analysis-note">세종 평균 대비 기여도</span>
+              </div>
+              <div className="score-analysis-items">
+                <div className="score-analysis-item">
+                  <div className="score-item-header">
+                    <span className="score-label">유동인구</span>
+                    <span className={`score-value ${scoreBreakdown.population >= 0 ? 'positive' : 'negative'}`}>
+                      {formatContribution(scoreBreakdown.population)}
+                    </span>
+                  </div>
+                  <div className="score-bar-container">
+                    <div 
+                      className={`score-bar ${scoreBreakdown.population >= 0 ? 'positive' : 'negative'}`}
+                      style={{ width: `${Math.abs(scoreBreakdown.population) * 5}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="score-analysis-item">
+                  <div className="score-item-header">
+                    <span className="score-label">경쟁 포화도</span>
+                    <span className={`score-value ${scoreBreakdown.competition >= 0 ? 'positive' : 'negative'}`}>
+                      {formatContribution(scoreBreakdown.competition)}
+                    </span>
+                  </div>
+                  <div className="score-bar-container">
+                    <div 
+                      className={`score-bar ${scoreBreakdown.competition >= 0 ? 'positive' : 'negative'}`}
+                      style={{ width: `${Math.abs(scoreBreakdown.competition) * 5}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="score-analysis-item">
+                  <div className="score-item-header">
+                    <span className="score-label">임대료</span>
+                    <span className={`score-value ${scoreBreakdown.rent >= 0 ? 'positive' : 'negative'}`}>
+                      {formatContribution(scoreBreakdown.rent)}
+                    </span>
+                  </div>
+                  <div className="score-bar-container">
+                    <div 
+                      className={`score-bar ${scoreBreakdown.rent >= 0 ? 'positive' : 'negative'}`}
+                      style={{ width: `${Math.abs(scoreBreakdown.rent) * 5}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="score-analysis-item">
+                  <div className="score-item-header">
+                    <span className="score-label">공실률</span>
+                    <span className={`score-value ${scoreBreakdown.vacancy >= 0 ? 'positive' : 'negative'}`}>
+                      {formatContribution(scoreBreakdown.vacancy)}
+                    </span>
+                  </div>
+                  <div className="score-bar-container">
+                    <div 
+                      className={`score-bar ${scoreBreakdown.vacancy >= 0 ? 'positive' : 'negative'}`}
+                      style={{ width: `${Math.abs(scoreBreakdown.vacancy) * 5}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="score-analysis-item">
+                  <div className="score-item-header">
+                    <span className="score-label">입지등급</span>
+                    <span className={`score-value ${scoreBreakdown.locationGrade >= 0 ? 'positive' : 'negative'}`}>
+                      {formatContribution(scoreBreakdown.locationGrade)}
+                    </span>
+                  </div>
+                  <div className="score-bar-container">
+                    <div 
+                      className={`score-bar ${scoreBreakdown.locationGrade >= 0 ? 'positive' : 'negative'}`}
+                      style={{ width: `${Math.abs(scoreBreakdown.locationGrade) * 5}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* 유망도 점수 산출 로직 */}
           <div className="score-formula-section">

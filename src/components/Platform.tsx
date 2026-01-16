@@ -84,6 +84,7 @@ function Platform() {
           district={selectedDistrict}
           businessType={selectedBusiness}
           recommendation={selectedRecommendation}
+          recommendations={recommendations}
           onBack={handleBackToResult}
           onGoToPolicy={handleGoToPolicy}
         />

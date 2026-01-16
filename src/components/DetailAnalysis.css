@@ -1772,3 +1772,109 @@
   color: #1e40af;
 }
 
+/* 점수 분석 (AI 패널용) */
+.ai-panel .score-analysis {
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+  margin-top: 1rem;
+}
+
+.ai-panel .score-analysis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.ai-panel .score-analysis-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ai-panel .analysis-icon {
+  font-size: 1.25rem;
+}
+
+.ai-panel .score-analysis-header h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.ai-panel .score-analysis-note {
+  font-size: 0.75rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+}
+
+.ai-panel .score-analysis-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ai-panel .score-analysis-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ai-panel .score-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ai-panel .score-analysis-item .score-label {
+  font-size: 0.875rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.ai-panel .score-analysis-item .score-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-sm);
+}
+
+.ai-panel .score-value.positive {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.ai-panel .score-value.negative {
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.ai-panel .score-bar-container {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.ai-panel .score-bar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+}
+
+.ai-panel .score-bar.positive {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.ai-panel .score-bar.negative {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
