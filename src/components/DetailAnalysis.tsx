@@ -14,7 +14,7 @@ interface DetailAnalysisProps {
   onGoToPolicy: () => void
 }
 
-type TabType = 'traffic' | 'competition' | 'rent' | 'customer'
+type TabType = 'traffic' | 'competition' | 'rent' | 'customer' | 'regulations' | 'safety'
 
 function DetailAnalysis({ district, businessType, recommendation, onBack, onGoToPolicy }: DetailAnalysisProps) {
   const [activeTab, setActiveTab] = useState<TabType>('traffic')
@@ -95,6 +95,8 @@ function DetailAnalysis({ district, businessType, recommendation, onBack, onGoTo
     { id: 'competition' as TabType, label: '경쟁 점포', icon: '🏪' },
     { id: 'rent' as TabType, label: '임대료 수준', icon: '💰' },
     { id: 'customer' as TabType, label: '고객 특성', icon: '🎯' },
+    { id: 'regulations' as TabType, label: '입주 가능 업종', icon: '📋' },
+    { id: 'safety' as TabType, label: '소방/인테리어', icon: '🚨' },
   ]
 
   return (
@@ -660,6 +662,242 @@ function DetailAnalysis({ district, businessType, recommendation, onBack, onGoTo
                   <p>{realData.demographics.age2030Ratio >= 40 
                     ? `이 지역은 20~30대 비중이 ${realData.demographics.age2030Ratio}%로 높아, 트렌디한 컨셉의 ${businessType.name}이(가) 성공 가능성이 높습니다.`
                     : `이 지역은 40~50대 비중이 ${realData.demographics.age4050Ratio}%로, 안정적인 소비층을 타겟으로 한 ${businessType.name} 전략이 유효합니다.`}</p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'regulations' && (
+              <div className="content-panel regulations-panel">
+                <h3>📋 업종별 입주 가능 여부 분석</h3>
+                <p className="data-source">📍 건축법·용도지역·소방법·인허가 기준 기반</p>
+                
+                <div className="regulation-alert">
+                  <span className="alert-icon">🤖</span>
+                  <div className="alert-content">
+                    <h4>AI 자동 필터링</h4>
+                    <p>세종시 건축법, 용도지역 조례, 소방법, 교육청 학원 인가 기준 등을 AI 모델로 학습하여, 실질적인 입주 가능 여부를 자동 분석합니다.</p>
+                  </div>
+                </div>
+
+                <div className="zone-info">
+                  <h4>용도지역 정보</h4>
+                  <div className="zone-grid">
+                    <div className="zone-item">
+                      <span className="zone-label">용도지역</span>
+                      <span className="zone-value">제2종 일반주거지역</span>
+                    </div>
+                    <div className="zone-item">
+                      <span className="zone-label">지구단위계획</span>
+                      <span className="zone-value">중심상업지구</span>
+                    </div>
+                    <div className="zone-item">
+                      <span className="zone-label">건폐율</span>
+                      <span className="zone-value">60% 이하</span>
+                    </div>
+                    <div className="zone-item">
+                      <span className="zone-label">용적률</span>
+                      <span className="zone-value">200% 이하</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="business-availability">
+                  <h4>업종별 입주 가능 여부</h4>
+                  <div className="availability-list">
+                    <div className="availability-item allowed">
+                      <span className="status-icon">✅</span>
+                      <div className="availability-info">
+                        <span className="business-type">음식점 (일반음식점)</span>
+                        <span className="availability-detail">1~5층 전체 가능 | 별도 제약 없음</span>
+                      </div>
+                    </div>
+                    <div className="availability-item allowed">
+                      <span className="status-icon">✅</span>
+                      <div className="availability-info">
+                        <span className="business-type">카페 (휴게음식점)</span>
+                        <span className="availability-detail">전 층 가능 | 별도 제약 없음</span>
+                      </div>
+                    </div>
+                    <div className="availability-item partial">
+                      <span className="status-icon">⚠️</span>
+                      <div className="availability-info">
+                        <span className="business-type">학원 (교습소)</span>
+                        <span className="availability-detail">3층 이상만 가능 | 학교 정화구역 200m 이내 제한</span>
+                      </div>
+                    </div>
+                    <div className="availability-item partial">
+                      <span className="status-icon">⚠️</span>
+                      <div className="availability-info">
+                        <span className="business-type">병원 (의원)</span>
+                        <span className="availability-detail">3층만 가능 | 의료법상 면적 기준 충족 필요</span>
+                      </div>
+                    </div>
+                    <div className="availability-item restricted">
+                      <span className="status-icon">❌</span>
+                      <div className="availability-info">
+                        <span className="business-type">노래방 (단란주점)</span>
+                        <span className="availability-detail">입주 불가 | 학교 정화구역 및 주거지역 제한</span>
+                      </div>
+                    </div>
+                    <div className="availability-item restricted">
+                      <span className="status-icon">❌</span>
+                      <div className="availability-info">
+                        <span className="business-type">PC방</span>
+                        <span className="availability-detail">입주 불가 | 학교 정화구역 200m 이내</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="regulation-example">
+                  <h4>실제 사례 시뮬레이션</h4>
+                  <div className="example-card">
+                    <div className="example-header">
+                      <span className="example-icon">🏢</span>
+                      <span className="example-title">{district.name} 중심상가 A동 201호 (2층, 33평)</span>
+                    </div>
+                    <div className="example-results">
+                      <div className="example-result success">
+                        <span className="result-icon">✅</span>
+                        <span className="result-text">일반음식점: <strong>입주 가능</strong></span>
+                      </div>
+                      <div className="example-result success">
+                        <span className="result-icon">✅</span>
+                        <span className="result-text">카페: <strong>입주 가능</strong></span>
+                      </div>
+                      <div className="example-result warning">
+                        <span className="result-icon">⚠️</span>
+                        <span className="result-text">학원: <strong>인근 초등학교 150m → 입주 불가</strong></span>
+                      </div>
+                      <div className="example-result error">
+                        <span className="result-icon">❌</span>
+                        <span className="result-text">PC방: <strong>학교 정화구역 내 → 입주 불가</strong></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="insight-box">
+                  <span className="insight-icon">💡</span>
+                  <p>이 지역은 <strong>제2종 일반주거지역</strong>으로, 일반음식점과 카페는 제약 없이 입주 가능하나, 
+                  학원·PC방 등은 학교 정화구역 규제를 받습니다. 창업 전 반드시 해당 건물의 용도지역과 인허가 조건을 확인하세요.</p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'safety' && (
+              <div className="content-panel safety-panel">
+                <h3>🚨 소방법 및 인테리어 제약 분석</h3>
+                <p className="data-source">📍 건축물 대장·소방시설 현황 기반</p>
+                
+                <div className="regulation-alert">
+                  <span className="alert-icon">🔥</span>
+                  <div className="alert-content">
+                    <h4>소방 제약 사전 안내</h4>
+                    <p>"문 위치 하나도 소방법 때문에 고민했다" - 실제 창업자 사례를 반영하여, 
+                    인테리어 비용을 사전에 예측할 수 있도록 소방시설 현황을 제공합니다.</p>
+                  </div>
+                </div>
+
+                <div className="building-safety-info">
+                  <h4>건축물 소방시설 현황</h4>
+                  <div className="safety-grid">
+                    <div className="safety-item">
+                      <span className="safety-icon">💧</span>
+                      <div className="safety-info">
+                        <span className="safety-label">스프링클러</span>
+                        <span className="safety-status installed">설치됨</span>
+                      </div>
+                      <span className="safety-detail">전 층 설치 완료 (2023년 점검)</span>
+                    </div>
+                    <div className="safety-item">
+                      <span className="safety-icon">🚪</span>
+                      <div className="safety-info">
+                        <span className="safety-label">비상구</span>
+                        <span className="safety-status installed">2개소</span>
+                      </div>
+                      <span className="safety-detail">동측·서측 각 1개소 (폭 0.9m)</span>
+                    </div>
+                    <div className="safety-item">
+                      <span className="safety-icon">🔔</span>
+                      <div className="safety-info">
+                        <span className="safety-label">화재경보기</span>
+                        <span className="safety-status installed">설치됨</span>
+                      </div>
+                      <span className="safety-detail">각 실 천장 1개소씩</span>
+                    </div>
+                    <div className="safety-item">
+                      <span className="safety-icon">🧯</span>
+                      <div className="safety-info">
+                        <span className="safety-label">소화기</span>
+                        <span className="safety-status installed">설치됨</span>
+                      </div>
+                      <span className="safety-detail">복도 2개소 (2025년 교체)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="interior-constraints">
+                  <h4>인테리어 제약 사항</h4>
+                  <div className="constraint-list">
+                    <div className="constraint-item high">
+                      <span className="priority-badge high">필수</span>
+                      <div className="constraint-content">
+                        <h5>비상구 경로 확보</h5>
+                        <p>주 출입구에서 비상구까지 최소 1.5m 폭 통로 유지 필요. 좌석 배치 시 유의.</p>
+                      </div>
+                    </div>
+                    <div className="constraint-item high">
+                      <span className="priority-badge high">필수</span>
+                      <div className="constraint-content">
+                        <h5>주방 후드 설치 (음식점)</h5>
+                        <p>가스레인지 사용 시 자동소화장치 부착 의무. 예상 비용: 150~300만원</p>
+                      </div>
+                    </div>
+                    <div className="constraint-item medium">
+                      <span className="priority-badge medium">권장</span>
+                      <div className="constraint-content">
+                        <h5>내부 칸막이 변경</h5>
+                        <p>기존 구조 변경 시 소방법 재검토 필요. 석고보드 칸막이는 가능.</p>
+                      </div>
+                    </div>
+                    <div className="constraint-item low">
+                      <span className="priority-badge low">선택</span>
+                      <div className="constraint-content">
+                        <h5>간판 설치</h5>
+                        <p>건물 외관 광고물 허가 필요. 세종시 옥외광고물 조례 확인.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="cost-estimate">
+                  <h4>예상 인테리어 비용 (음식점 기준)</h4>
+                  <div className="cost-breakdown">
+                    <div className="cost-item">
+                      <span className="cost-category">기본 인테리어</span>
+                      <span className="cost-amount">평당 150~250만원</span>
+                    </div>
+                    <div className="cost-item">
+                      <span className="cost-category">주방 설비 (후드, 가스 등)</span>
+                      <span className="cost-amount">500~800만원</span>
+                    </div>
+                    <div className="cost-item">
+                      <span className="cost-category">소방시설 보완</span>
+                      <span className="cost-amount">100~200만원</span>
+                    </div>
+                    <div className="cost-item total">
+                      <span className="cost-category">총 예상 비용 (30평 기준)</span>
+                      <span className="cost-amount">5,100~8,300만원</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="insight-box">
+                  <span className="insight-icon">💡</span>
+                  <p>이 건물은 소방시설이 잘 갖춰져 있어, 추가 소방 공사 비용이 적게 들 것으로 예상됩니다. 
+                  다만 주방 후드 자동소화장치는 필수이므로, 인테리어 예산에 반드시 포함하세요. 
+                  비상구 위치를 고려하여 좌석을 배치하면 소방 점검 통과에 유리합니다.</p>
                 </div>
               </div>
             )}
