@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import { BusinessType, DistrictData, RecommendationResult } from '../types'
-import { realDistrictData, defaultDistrictInfo } from '../data/realDistrictData'
 import 'leaflet/dist/leaflet.css'
 import './ResultMap.css'
 
@@ -38,47 +37,6 @@ function ResultMap({ businessType, recommendations, onSelectCandidate, onBack }:
       ...rec,
       score: top3ScoreOverrides[rec.district.name] ?? rec.score,
     }))
-
-  const getRentAvg = (districtName: string) => {
-    const info = realDistrictData[districtName] || defaultDistrictInfo
-    return info.rent.avg1F
-  }
-
-  const average = (values: number[]) =>
-    values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0
-
-  const averages = {
-    population: average(recommendations.map((rec) => rec.district.population)),
-    competitionIndex: average(recommendations.map((rec) => rec.district.competitionIndex)),
-    vacancyRate: average(recommendations.map((rec) => rec.district.vacancyRate)),
-    marketActivationIndex: average(recommendations.map((rec) => rec.district.marketActivationIndex)),
-    rent: average(recommendations.map((rec) => getRentAvg(rec.district.name))),
-  }
-
-  const clamp = (value: number, min: number, max: number) =>
-    Math.max(min, Math.min(max, value))
-
-  const calcContribution = (value: number, avg: number, scale: number, invert = false) => {
-    if (!avg) return 0
-    const diff = invert ? avg - value : value - avg
-    return clamp(Math.round((diff / avg) * scale), -20, 20)
-  }
-
-  const getScoreBreakdown = (rec?: RecommendationResult | null) => {
-    if (!rec) return null
-    const rentAvg = getRentAvg(rec.district.name)
-    return {
-      population: calcContribution(rec.district.population, averages.population, 18),
-      competition: calcContribution(rec.district.competitionIndex, averages.competitionIndex, 14, true),
-      rent: calcContribution(rentAvg, averages.rent, 12, true),
-      vacancy: calcContribution(rec.district.vacancyRate, averages.vacancyRate, 10, true),
-      locationGrade: calcContribution(rec.district.marketActivationIndex, averages.marketActivationIndex, 15),
-    }
-  }
-
-  const scoreBreakdown = getScoreBreakdown(top3[0])
-
-  const formatContribution = (value: number) => `${value >= 0 ? '+' : ''}${value}점`
 
   // 점수에 따른 색상 (노란색 → 주황색 → 빨간색)
   const getScoreColor = (score: number) => {
@@ -255,95 +213,6 @@ function ResultMap({ businessType, recommendations, onSelectCandidate, onBack }:
             </p>
           </div>
         </div>
-
-        {/* 점수 분석 */}
-        {scoreBreakdown && (
-          <div className="score-analysis">
-            <div className="score-analysis-header">
-              <div className="score-analysis-title">
-                <span className="analysis-icon">📊</span>
-                <h4>점수 분석</h4>
-              </div>
-              <span className="score-analysis-note">세종 평균 대비 기여도</span>
-            </div>
-            <div className="score-analysis-items">
-              <div className="score-analysis-item">
-                <div className="score-item-header">
-                  <span className="score-label">유동인구</span>
-                  <span className={`score-value ${scoreBreakdown.population >= 0 ? 'positive' : 'negative'}`}>
-                    {formatContribution(scoreBreakdown.population)}
-                  </span>
-                </div>
-                <div className="score-bar-container">
-                  <div 
-                    className={`score-bar ${scoreBreakdown.population >= 0 ? 'positive' : 'negative'}`}
-                    style={{ width: `${Math.abs(scoreBreakdown.population) * 5}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="score-analysis-item">
-                <div className="score-item-header">
-                  <span className="score-label">경쟁 포화도</span>
-                  <span className={`score-value ${scoreBreakdown.competition >= 0 ? 'positive' : 'negative'}`}>
-                    {formatContribution(scoreBreakdown.competition)}
-                  </span>
-                </div>
-                <div className="score-bar-container">
-                  <div 
-                    className={`score-bar ${scoreBreakdown.competition >= 0 ? 'positive' : 'negative'}`}
-                    style={{ width: `${Math.abs(scoreBreakdown.competition) * 5}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="score-analysis-item">
-                <div className="score-item-header">
-                  <span className="score-label">임대료</span>
-                  <span className={`score-value ${scoreBreakdown.rent >= 0 ? 'positive' : 'negative'}`}>
-                    {formatContribution(scoreBreakdown.rent)}
-                  </span>
-                </div>
-                <div className="score-bar-container">
-                  <div 
-                    className={`score-bar ${scoreBreakdown.rent >= 0 ? 'positive' : 'negative'}`}
-                    style={{ width: `${Math.abs(scoreBreakdown.rent) * 5}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="score-analysis-item">
-                <div className="score-item-header">
-                  <span className="score-label">공실률</span>
-                  <span className={`score-value ${scoreBreakdown.vacancy >= 0 ? 'positive' : 'negative'}`}>
-                    {formatContribution(scoreBreakdown.vacancy)}
-                  </span>
-                </div>
-                <div className="score-bar-container">
-                  <div 
-                    className={`score-bar ${scoreBreakdown.vacancy >= 0 ? 'positive' : 'negative'}`}
-                    style={{ width: `${Math.abs(scoreBreakdown.vacancy) * 5}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="score-analysis-item">
-                <div className="score-item-header">
-                  <span className="score-label">입지등급</span>
-                  <span className={`score-value ${scoreBreakdown.locationGrade >= 0 ? 'positive' : 'negative'}`}>
-                    {formatContribution(scoreBreakdown.locationGrade)}
-                  </span>
-                </div>
-                <div className="score-bar-container">
-                  <div 
-                    className={`score-bar ${scoreBreakdown.locationGrade >= 0 ? 'positive' : 'negative'}`}
-                    style={{ width: `${Math.abs(scoreBreakdown.locationGrade) * 5}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-            <div className="score-analysis-summary">
-              <span className="summary-icon">💡</span>
-              <p>총 85점 = 세종 평균(50점) + 요인별 기여도 합계</p>
-            </div>
-          </div>
-        )}
       </main >
     </div >
   )
